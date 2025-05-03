@@ -40,6 +40,6 @@
 			</p>
 		{/if}
 
-		<Button disabled={hatsCount === 0} on:click={onSelect} class="px-8">Pick a Random Hat</Button>
+		<Button disabled={hatsCount === 0} onclick={onSelect} class="px-8">Pick a Random Hat</Button>
 	</Card>
 </div>

@@ -35,8 +35,8 @@
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<Button variant="outline" size="sm" on:click={() => onEdit(hat)}>Edit</Button>
-					<Button variant="destructive" size="sm" on:click={() => confirmDelete(hat.id, hat.name)}
+					<Button variant="outline" size="sm" onclick={() => onEdit(hat)}>Edit</Button>
+					<Button variant="destructive" size="sm" onclick={() => confirmDelete(hat.id, hat.name)}
 						>Delete</Button
 					>
 				</div>

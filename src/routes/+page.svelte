@@ -7,11 +7,11 @@
 	import { Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
-	let hats: Hat[] = [];
-	let selectedHat: Hat | null = null;
+	let hats: Hat[] = $state([]);
+	let selectedHat: Hat | null = $state(null);
 	let previousHatId: string | null = null;
-	let showAddEditModal = false;
-	let editingHat: Hat | null = null;
+	let showAddEditModal = $state(false);
+	let editingHat: Hat | null = $state(null);
 
 	onMount(() => {
 		const stored = localStorage.getItem('cap_state');
@@ -92,7 +92,7 @@
 		<div>
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
-				<Button on:click={openAddModal} variant="ghost"><Plus /></Button>
+				<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
 			</div>
 
 			<HatInventory {hats} onEdit={openEditModal} onDelete={deleteHat} />
