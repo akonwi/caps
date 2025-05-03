@@ -1,38 +1,74 @@
-# sv
+# Caps - Hat Selection App
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A simple, elegant application to help you decide which hat to wear each day. Built with SvelteKit and styled with TailwindCSS.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Add, edit, and delete hats in your collection
+- Upload images of your hats
+- Randomly select a hat to wear (avoids selecting the same hat twice in a row)
+- Persistent storage using localStorage
+- Mobile-friendly, responsive design
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Getting Started
 
-# create a new project in my-app
-npx sv create my-app
-```
+### Prerequisites
 
-## Developing
+- Node.js (v16 or later recommended)
+- npm or pnpm
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Installation
 
-```bash
-npm run dev
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/caps.git
+   cd caps
+   ```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+2. Install dependencies
+   ```bash
+   npm install
+   # or
+   pnpm install
+   ```
 
-## Building
+3. Start the development server
+   ```bash
+   npm run dev
+   # or
+   pnpm dev
+   ```
 
-To create a production version of your app:
+4. Open your browser and navigate to `http://localhost:5173`
+
+## Building for Production
 
 ```bash
 npm run build
+# or
+pnpm build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run preview
+# or
+pnpm preview
+```
+
+## How It Works
+
+- The app stores your hat collection in the browser's localStorage
+- Images are converted to base64 data URLs for persistent storage
+- The random selection algorithm ensures you don't wear the same hat twice in a row
+
+## Technologies Used
+
+- [SvelteKit](https://kit.svelte.dev/) - Frontend framework
+- [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Lucide Icons](https://lucide.dev/) - Icon library
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
