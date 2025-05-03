@@ -3,7 +3,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Textarea } from '$lib/components/ui/textarea';
 	import { generateId } from '$lib/utils';
 
 	export let hat: Hat | null = null;
@@ -21,8 +20,14 @@
 		if (input.files && input.files.length > 0) {
 			imageFile = input.files[0];
 
-			// Create a local URL for the image file
-			imageUrl = URL.createObjectURL(imageFile);
+			// Convert the image file to a base64 data URL
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				if (e.target && typeof e.target.result === 'string') {
+					imageUrl = e.target.result;
+				}
+			};
+			reader.readAsDataURL(imageFile);
 		}
 	}
 
