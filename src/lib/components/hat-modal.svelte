@@ -11,14 +11,13 @@
 
 	let name = hat?.name || '';
 	let imageUrl = hat?.imageUrl || '';
-	let imageFile: File | null = null;
 
 	const isEditing = !!hat;
 
 	function handleFileChange(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
-			imageFile = input.files[0];
+			const imageFile = input.files[0];
 
 			// Convert the image file to a base64 data URL
 			const reader = new FileReader();
