@@ -35,9 +35,7 @@
 
 			<p class="mb-6 text-center">
 				{#if hatsCount === 0}
-					Add some hats to your collection first!
-				{:else}
-					Press the button below to get your hat selection for today.
+					Add some hats to the collection first!
 				{/if}
 			</p>
 		{/if}
