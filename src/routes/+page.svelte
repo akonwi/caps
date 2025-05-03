@@ -13,6 +13,10 @@
 	let showAddEditModal = $state(false);
 	let editingHat: Hat | null = $state(null);
 
+	$effect(() => {
+		localStorage.setItem('cap_state', JSON.stringify({ hats, previousHatId }));
+	});
+
 	onMount(() => {
 		const stored = localStorage.getItem('cap_state');
 		if (stored) {
@@ -21,10 +25,6 @@
 			previousHatId = data.previousHatId;
 		}
 	});
-
-	function save() {
-		localStorage.setItem('cap_state', JSON.stringify({ hats, previousHatId }));
-	}
 
 	function openAddModal() {
 		editingHat = null;
@@ -43,19 +43,16 @@
 
 	function addHat(hat: Hat) {
 		hats = [...hats, hat];
-		save();
 		closeModal();
 	}
 
 	function updateHat(updatedHat: Hat) {
 		hats = hats.map((hat) => (hat.id === updatedHat.id ? updatedHat : hat));
-		save();
 		closeModal();
 	}
 
 	function deleteHat(id: string) {
 		hats = hats.filter((hat) => hat.id !== id);
-		save();
 
 		// If we deleted the previously selected hat, reset previousHatId
 		if (previousHatId === id) {
