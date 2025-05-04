@@ -14,19 +14,80 @@
 
 	const isEditing = !!hat;
 
-	function handleFileChange(event: Event) {
+	/**
+	 * Compresses an image to reduce its size
+	 */
+	async function compressImage(file: File, maxWidth = 800, quality = 0.8): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (readerEvent) => {
+				if (!readerEvent.target?.result) {
+					return reject(new Error('Error reading file'));
+				}
+
+				const img = new Image();
+				img.onload = () => {
+					// Calculate new dimensions while maintaining aspect ratio
+					let width = img.width;
+					let height = img.height;
+
+					if (width > maxWidth) {
+						height = (height * maxWidth) / width;
+						width = maxWidth;
+					}
+
+					// Create a canvas to draw the resized image
+					const canvas = document.createElement('canvas');
+					canvas.width = width;
+					canvas.height = height;
+
+					// Draw the image on the canvas
+					const ctx = canvas.getContext('2d');
+					if (!ctx) {
+						return reject(new Error('Could not get canvas context'));
+					}
+					ctx.drawImage(img, 0, 0, width, height);
+
+					// Get the data URL from the canvas with reduced quality
+					const dataUrl = canvas.toDataURL('image/jpeg', quality);
+					resolve(dataUrl);
+				};
+
+				img.onerror = () => {
+					reject(new Error('Error loading image'));
+				};
+
+				img.src = readerEvent.target.result as string;
+			};
+
+			reader.onerror = () => {
+				reject(new Error('Error reading file'));
+			};
+
+			reader.readAsDataURL(file);
+		});
+	}
+
+	async function handleFileChange(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
 			const imageFile = input.files[0];
 
-			// Convert the image file to a base64 data URL
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				if (e.target && typeof e.target.result === 'string') {
-					imageUrl = e.target.result;
-				}
-			};
-			reader.readAsDataURL(imageFile);
+			try {
+				// Compress the image to reduce storage size
+				imageUrl = await compressImage(imageFile);
+				console.log('Image compressed successfully');
+			} catch (error) {
+				console.error('Image compression failed, falling back to standard method', error);
+				// Fallback to standard method
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					if (e.target && typeof e.target.result === 'string') {
+						imageUrl = e.target.result;
+					}
+				};
+				reader.readAsDataURL(imageFile);
+			}
 		}
 	}
 
@@ -68,7 +129,7 @@
 			</div>
 
 			<div class="flex justify-end gap-2 pt-4">
-				<Button type="button" variant="outline" onclick={onClose}>Cancel</Button>
+				<Button type="button" variant="outline" on:click={onClose}>Cancel</Button>
 				<Button type="submit">{isEditing ? 'Update' : 'Add'} Hat</Button>
 			</div>
 		</form>
