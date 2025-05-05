@@ -23,11 +23,13 @@
 				.then(() => {
 					console.log(`Successfully saved ${hats.length} hats using ${storageStatus.method}`);
 				})
-				.catch(err => {
+				.catch((err) => {
 					console.error('Failed to save state:', err);
 					// Alert user in production
 					if (import.meta.env.PROD) {
-						alert('Warning: Your browser may not be properly saving your hat collection. Try using a different browser or disable private browsing mode.');
+						alert(
+							'Warning: Your browser may not be properly saving your hat collection. Try using a different browser or disable private browsing mode.'
+						);
 					}
 				});
 		}
@@ -37,16 +39,21 @@
 		// Check storage availability and set status
 		const availability = checkStorageAvailability();
 		storageStatus.available = availability.localStorage || availability.indexedDB;
-		storageStatus.method = availability.localStorage ? 'localStorage' : 
-			(availability.indexedDB ? 'IndexedDB' : 'none');
-		
+		storageStatus.method = availability.localStorage
+			? 'localStorage'
+			: availability.indexedDB
+				? 'IndexedDB'
+				: 'none';
+
 		console.log('Storage status:', storageStatus);
 
 		// If no storage is available, warn the user
 		if (!storageStatus.available) {
 			console.warn('No storage methods available - data will not persist');
 			if (import.meta.env.PROD) {
-				alert('Your browser settings may prevent saving your hat collection. Consider disabling private browsing or using a different browser.');
+				alert(
+					'Your browser settings may prevent saving your hat collection. Consider disabling private browsing or using a different browser.'
+				);
 			}
 			return;
 		}
@@ -122,21 +129,25 @@
 
 <main class="container mx-auto max-w-4xl px-4 py-8">
 	<h1 class="mb-6 text-center text-3xl font-bold">Caps</h1>
-	
-	{#if import.meta.env.DEV}
+
+	<!-- {#if import.meta.env.DEV} -->
 	<div class="mb-4 text-center text-sm text-gray-500">
 		<div class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1">
-			<span class="mr-1 inline-block h-2 w-2 rounded-full {storageStatus.available ? 'bg-green-500' : 'bg-red-500'}"></span>
+			<span
+				class="mr-1 inline-block h-2 w-2 rounded-full {storageStatus.available
+					? 'bg-green-500'
+					: 'bg-red-500'}"
+			></span>
 			Storage: {storageStatus.method}
 		</div>
 	</div>
-	{/if}
+	<!-- {/if} -->
 
 	<div class="grid gap-8 md:grid-cols-2">
 		<div>
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
-				<Button on:click={openAddModal} variant="ghost"><Plus /></Button>
+				<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
 			</div>
 
 			<HatInventory {hats} onEdit={openEditModal} onDelete={deleteHat} />
