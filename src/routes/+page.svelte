@@ -66,6 +66,10 @@
 				hats = state.hats || [];
 				previousHatId = state.previousHatId || null;
 				lastSelectedIds = state.lastSelectedIds || [];
+				if (lastSelectedIds?.length! > 0) {
+					const mostRecentId = lastSelectedIds![lastSelectedIds.length - 1];
+					selectedHat = hats.find((h) => h.id === mostRecentId) ?? null;
+				}
 				console.log(`Loaded ${hats.length} hats from storage`);
 			}
 		} catch (e) {
