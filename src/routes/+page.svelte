@@ -11,6 +11,7 @@
 	let hats: Hat[] = $state([]);
 	let selectedHat: Hat | null = $state(null);
 	let previousHatId: string | null = null;
+	let lastSelectedIds: string[] = [];
 	let showAddEditModal = $state(false);
 	let editingHat: Hat | null = $state(null);
 	let storageStatus = $state({ available: false, method: '?' });
@@ -19,7 +20,7 @@
 	$effect(() => {
 		// Only save if there's data to save and we're not in initial loading
 		if (storageStatus.available) {
-			saveState({ hats, previousHatId })
+			saveState({ hats, lastSelectedIds })
 				.then(() => {
 					console.log(`Successfully saved ${hats.length} hats using ${storageStatus.method}`);
 				})
@@ -64,6 +65,7 @@
 			if (state) {
 				hats = state.hats || [];
 				previousHatId = state.previousHatId || null;
+				lastSelectedIds = state.lastSelectedIds || [];
 				console.log(`Loaded ${hats.length} hats from storage`);
 			}
 		} catch (e) {
@@ -117,31 +119,35 @@
 			return;
 		}
 
-		// Filter out the previously selected hat to avoid consecutive selections
-		const availableHats = hats.filter((hat) => hat.id !== previousHatId);
+		// Filter out the latest selected hats to avoid consecutive selections
+		const availableHats = hats.filter((hat) => lastSelectedIds.includes(hat.id));
 
 		// Select a random hat from available hats
 		const randomIndex = Math.floor(Math.random() * availableHats.length);
 		selectedHat = availableHats[randomIndex];
-		previousHatId = selectedHat.id;
+
+		// if there are already 7 in the last selections, remove the earliest
+		if (lastSelectedIds.length === 7) lastSelectedIds.shift();
+		// push this one to the end
+		lastSelectedIds.push(selectedHat.id);
 	}
 </script>
 
 <main class="container mx-auto max-w-4xl px-4 py-8">
 	<h1 class="mb-6 text-center text-3xl font-bold">Caps</h1>
 
-	<!-- {#if import.meta.env.DEV} -->
-	<div class="mb-4 text-center text-sm text-gray-500">
-		<div class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1">
-			<span
-				class="mr-1 inline-block h-2 w-2 rounded-full {storageStatus.available
-					? 'bg-green-500'
-					: 'bg-red-500'}"
-			></span>
-			Storage: {storageStatus.method}
+	{#if import.meta.env.DEV}
+		<div class="mb-4 text-center text-sm text-gray-500">
+			<div class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1">
+				<span
+					class="mr-1 inline-block h-2 w-2 rounded-full {storageStatus.available
+						? 'bg-green-500'
+						: 'bg-red-500'}"
+				></span>
+				Storage: {storageStatus.method}
+			</div>
 		</div>
-	</div>
-	<!-- {/if} -->
+	{/if}
 
 	<div class="grid gap-8 md:grid-cols-2">
 		<div>

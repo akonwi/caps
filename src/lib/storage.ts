@@ -10,6 +10,7 @@ export interface AppState {
 		imageUrl: string | null;
 	}>;
 	previousHatId: string | null;
+	lastSelectedIds: string[] | null;
 }
 
 // Database name and store name
@@ -45,7 +46,9 @@ async function initializeDb(): Promise<IDBDatabase> {
 /**
  * Save state to IndexedDB
  */
-async function saveToIndexedDB(state: AppState): Promise<void> {
+async function saveToIndexedDB(
+	state: Omit<AppState, "previousHatId">,
+): Promise<void> {
 	try {
 		const db = await initializeDb();
 		return new Promise((resolve, reject) => {
@@ -115,7 +118,9 @@ async function loadFromIndexedDB(): Promise<AppState | null> {
  * Save state with fallback
  * Tries localStorage first, falls back to IndexedDB if localStorage fails
  */
-export async function saveState(state: AppState): Promise<void> {
+export async function saveState(
+	state: Omit<AppState, "previousHatId">,
+): Promise<void> {
 	let localStorageSuccess = false;
 
 	// Try localStorage first
