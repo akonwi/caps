@@ -11,12 +11,12 @@
 	let hats: Hat[] = $state([]);
 	let selectedHat: Hat | null = $state(null);
 	let previousHatId: string | null = null;
-	let lastSelectedIds: string[] = [];
+	let lastSelectedIds: string[] = $state([]);
 	let showAddEditModal = $state(false);
 	let editingHat: Hat | null = $state(null);
 	let storageStatus = $state({ available: false, method: '?' });
 
-	// Save state whenever hats or previousHatId change
+	// Save state whenever hats or lastSelectedIds change
 	$effect(() => {
 		// Only save if there's data to save and we're not in initial loading
 		if (storageStatus.available) {
@@ -124,7 +124,7 @@
 		}
 
 		// Filter out the latest selected hats to avoid consecutive selections
-		const availableHats = hats.filter((hat) => lastSelectedIds.includes(hat.id));
+		const availableHats = hats.filter((hat) => !lastSelectedIds.includes(hat.id));
 
 		// Select a random hat from available hats
 		const randomIndex = Math.floor(Math.random() * availableHats.length);
@@ -155,16 +155,16 @@
 
 	<div class="grid gap-8 md:grid-cols-2">
 		<div>
+			<HatSelector {selectedHat} onSelect={selectRandomHat} hatsCount={hats.length} />
+		</div>
+
+		<div>
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
 				<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
 			</div>
 
 			<HatInventory {hats} onEdit={openEditModal} onDelete={deleteHat} />
-		</div>
-
-		<div>
-			<HatSelector {selectedHat} onSelect={selectRandomHat} hatsCount={hats.length} />
 		</div>
 	</div>
 

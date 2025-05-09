@@ -9,7 +9,7 @@
 </script>
 
 <div class="h-full">
-	<h2 class="mb-4 text-xl font-semibold">Today's Hat Selection</h2>
+	<h2 class="mb-4 text-xl font-semibold">Today's Hat</h2>
 
 	<Card class="flex flex-col items-center p-6">
 		{#if selectedHat}
@@ -35,11 +35,11 @@
 
 			<p class="mb-6 text-center">
 				{#if hatsCount === 0}
-					Add some hats to the collection first!
+					Add some hats to the collection
 				{/if}
 			</p>
 		{/if}
 
-		<Button disabled={hatsCount === 0} onclick={onSelect} class="px-8">Pick a Random Hat</Button>
+		<Button disabled={hatsCount === 0} onclick={onSelect} class="px-8">Pick a hat</Button>
 	</Card>
 </div>
