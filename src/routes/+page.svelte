@@ -4,6 +4,7 @@
 	import HatModal from '$lib/components/hat-modal.svelte';
 	import HatSelector from '$lib/components/hat-selector.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { DropdownMenu } from 'bits-ui';
 	import { Plus } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { loadState, saveState, checkStorageAvailability } from '$lib/storage';
@@ -145,6 +146,63 @@
 		downloadAnchorElement.click();
 		document.body.removeChild(downloadAnchorElement);
 	}
+	
+	function importCollection() {
+		// Create a file input element
+		const fileInput = document.createElement('input');
+		fileInput.type = 'file';
+		fileInput.accept = 'application/json';
+		
+		// Handle the file selection
+		fileInput.onchange = (event) => {
+			const target = event.target as HTMLInputElement;
+			if (!target.files || target.files.length === 0) return;
+			
+			const file = target.files[0];
+			const reader = new FileReader();
+			
+			reader.onload = (e) => {
+				try {
+					const content = e.target?.result as string;
+					const importedData = JSON.parse(content);
+					
+					// Validate the imported data
+					if (!importedData.hats || !Array.isArray(importedData.hats)) {
+						alert('Invalid file format. The file does not contain a valid hat collection.');
+						return;
+					}
+					
+					// Update the app state with the imported data
+					hats = importedData.hats;
+					
+					// Handle lastSelectedIds if present
+					if (importedData.lastSelectedIds && Array.isArray(importedData.lastSelectedIds)) {
+						lastSelectedIds = importedData.lastSelectedIds;
+						
+						// Update the selected hat if possible
+						if (lastSelectedIds.length > 0) {
+							const lastId = lastSelectedIds[lastSelectedIds.length - 1];
+							selectedHat = hats.find(h => h.id === lastId) || null;
+						}
+					} else {
+						// If no lastSelectedIds, initialize as empty
+						lastSelectedIds = [];
+						selectedHat = null;
+					}
+					
+					alert(`Successfully imported ${hats.length} hats.`);
+				} catch (error) {
+					console.error('Import error:', error);
+					alert('Failed to import file. The file may be corrupted or have an invalid format.');
+				}
+			};
+			
+			reader.readAsText(file);
+		};
+		
+		// Trigger the file selection dialog
+		fileInput.click();
+	}
 </script>
 
 <main class="container mx-auto max-w-4xl px-4 py-8">
@@ -172,7 +230,19 @@
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
 				<div class="flex gap-2">
-					<Button onclick={exportCollection} variant="outline" size="sm">Export</Button>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger class="inline-flex h-9 items-center justify-center rounded-md border px-3 py-2 text-sm font-medium">
+							Data
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content class="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 shadow-md">
+							<DropdownMenu.Item class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100" onclick={importCollection}>
+								Import
+							</DropdownMenu.Item>
+							<DropdownMenu.Item class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100" onclick={exportCollection}>
+								Export
+							</DropdownMenu.Item>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 					<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
 				</div>
 			</div>
