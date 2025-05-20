@@ -25,3 +25,4 @@ This file provides guidance to an LLM agent when working with code in this repos
 - Use TailwindCSS for styling with the `cn()` utility for class merging
 - Handle form validation with appropriate error messages
 - Prefer functional programming patterns when appropriate
+- use bits-ui components where possible
