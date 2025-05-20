@@ -127,6 +127,24 @@
 		// push this one to the end
 		lastSelectedIds.push(selectedHat.id);
 	}
+
+	function exportCollection() {
+		// Create a JSON string of the hat collection
+		const exportData = JSON.stringify({ hats, lastSelectedIds });
+		
+		// Create a data URL with the JSON content
+		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportData);
+		
+		// Create a temporary anchor element
+		const downloadAnchorElement = document.createElement('a');
+		downloadAnchorElement.setAttribute('href', dataStr);
+		downloadAnchorElement.setAttribute('download', "caps.json");
+		
+		// Append the anchor to the document, click it, and remove it
+		document.body.appendChild(downloadAnchorElement);
+		downloadAnchorElement.click();
+		document.body.removeChild(downloadAnchorElement);
+	}
 </script>
 
 <main class="container mx-auto max-w-4xl px-4 py-8">
@@ -153,7 +171,10 @@
 		<div>
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
-				<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
+				<div class="flex gap-2">
+					<Button onclick={exportCollection} variant="outline" size="sm">Export</Button>
+					<Button onclick={openAddModal} variant="ghost"><Plus /></Button>
+				</div>
 			</div>
 
 			<HatInventory {hats} onEdit={openEditModal} onDelete={deleteHat} />
