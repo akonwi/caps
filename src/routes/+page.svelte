@@ -10,7 +10,6 @@
 
 	let hats: Hat[] = $state([]);
 	let selectedHat: Hat | null = $state(null);
-	let previousHatId: string | null = null;
 	let lastSelectedIds: string[] = $state([]);
 	let showAddEditModal = $state(false);
 	let editingHat: Hat | null = $state(null);
@@ -64,7 +63,6 @@
 			const state = await loadState();
 			if (state) {
 				hats = state.hats || [];
-				previousHatId = state.previousHatId || null;
 				lastSelectedIds = state.lastSelectedIds || [];
 				if (lastSelectedIds?.length! > 0) {
 					const mostRecentId = lastSelectedIds![lastSelectedIds.length - 1];
@@ -104,11 +102,6 @@
 
 	function deleteHat(id: string) {
 		hats = hats.filter((hat) => hat.id !== id);
-
-		// If we deleted the previously selected hat, reset previousHatId
-		if (previousHatId === id) {
-			previousHatId = null;
-		}
 	}
 
 	function selectRandomHat() {
@@ -119,7 +112,6 @@
 
 		if (hats.length === 1) {
 			selectedHat = hats[0];
-			previousHatId = selectedHat.id;
 			return;
 		}
 
