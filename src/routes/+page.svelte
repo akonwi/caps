@@ -223,12 +223,15 @@
 	{/if}
 
 	<div class="grid gap-8 md:grid-cols-2">
-		<div class="space-y-6">
+		<div>
 			<HatSelector {selectedHat} onSelect={selectRandomHat} hatsCount={hats.length} />
-			<NotificationSetup {hats} />
 		</div>
 
 		<div>
+			<div class="mb-4">
+				<NotificationSetup {hats} />
+			</div>
+			
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">Collection</h2>
 				<div class="flex gap-2">
