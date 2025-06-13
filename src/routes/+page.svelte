@@ -3,6 +3,7 @@
 	import HatInventory from '$lib/components/hat-inventory.svelte';
 	import HatModal from '$lib/components/hat-modal.svelte';
 	import HatSelector from '$lib/components/hat-selector.svelte';
+	import NotificationSetup from '$lib/components/notification-setup.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { DropdownMenu } from 'bits-ui';
 	import { Plus } from '@lucide/svelte';
@@ -222,8 +223,9 @@
 	{/if}
 
 	<div class="grid gap-8 md:grid-cols-2">
-		<div>
+		<div class="space-y-6">
 			<HatSelector {selectedHat} onSelect={selectRandomHat} hatsCount={hats.length} />
+			<NotificationSetup {hats} />
 		</div>
 
 		<div>

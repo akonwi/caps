@@ -26,3 +26,4 @@ This file provides guidance to an LLM agent when working with code in this repos
 - Handle form validation with appropriate error messages
 - Prefer functional programming patterns when appropriate
 - use bits-ui components where possible
+  - To access the LLM-friendly version of any supported Bits UI documentation page, simply append /llms.txt to the end of the page's URL. This will return the content in a plain-text, LLM-optimized format.
