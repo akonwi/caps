@@ -1,7 +1,7 @@
 {
-	"name": "Caps - Hat Selection App",
+	"name": "Caps - Hat Inventory App",
 	"short_name": "Caps",
-	"description": "A simple, elegant app to help you decide which hat to wear each day",
+	"description": "A simple app to help you decide which hat to wear each day",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
