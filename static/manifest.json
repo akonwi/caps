@@ -2,7 +2,7 @@
 	"name": "Caps - Hat Inventory App",
 	"short_name": "Caps",
 	"description": "A simple app to help you decide which hat to wear each day",
-	"start_url": "/",
+	"start_url": "/caps",
 	"display": "standalone",
 	"background_color": "#ffffff",
 	"theme_color": "#000000",
