@@ -1,4 +1,4 @@
-import type { Hat } from '$lib';
+import type { Hat } from "$lib";
 
 export interface NotificationSchedule {
 	enabled: boolean;
@@ -11,36 +11,39 @@ export class PWAService {
 
 	async init(): Promise<void> {
 		if (!this.isSupported()) {
-			console.warn('PWA features not supported in this browser');
+			console.warn("PWA features not supported in this browser");
 			return;
 		}
 
 		try {
 			// Register service worker
-			this.registration = await navigator.serviceWorker.register('/sw.js', {
-				scope: '/'
-			});
+			this.registration = await navigator.serviceWorker.register(
+				"/caps/sw.js",
+				{
+					scope: "/",
+				},
+			);
 
-			console.log('Service worker registered successfully');
+			console.log("Service worker registered successfully");
 
 			// Wait for service worker to be ready
 			await navigator.serviceWorker.ready;
 		} catch (error) {
-			console.error('Service worker registration failed:', error);
+			console.error("Service worker registration failed:", error);
 		}
 	}
 
 	isSupported(): boolean {
 		return (
-			'serviceWorker' in navigator &&
-			'PushManager' in window &&
-			'Notification' in window
+			"serviceWorker" in navigator &&
+			"PushManager" in window &&
+			"Notification" in window
 		);
 	}
 
 	async requestNotificationPermission(): Promise<NotificationPermission> {
-		if (!('Notification' in window)) {
-			throw new Error('Notifications not supported');
+		if (!("Notification" in window)) {
+			throw new Error("Notifications not supported");
 		}
 
 		const permission = await Notification.requestPermission();
@@ -50,9 +53,9 @@ export class PWAService {
 	async enablePushNotifications(): Promise<boolean> {
 		try {
 			const permission = await this.requestNotificationPermission();
-			
-			if (permission !== 'granted') {
-				console.log('Notification permission denied');
+
+			if (permission !== "granted") {
+				console.log("Notification permission denied");
 				return false;
 			}
 
@@ -66,32 +69,35 @@ export class PWAService {
 				userVisibleOnly: true,
 				applicationServerKey: this.urlBase64ToUint8Array(
 					// This is a placeholder VAPID key - you'll need to generate your own
-					'BEl62iUYgUivxIkv69yViEuiBIa40HI8TQjgtm5o4GzDFQq-3YHhOhcmhXBqFXGNhVNnBD3N9d3LZVChLHx4_w8'
-				)
+					"BEl62iUYgUivxIkv69yViEuiBIa40HI8TQjgtm5o4GzDFQq-3YHhOhcmhXBqFXGNhVNnBD3N9d3LZVChLHx4_w8",
+				),
 			});
 
-			console.log('Push subscription successful');
+			console.log("Push subscription successful");
 			return true;
 		} catch (error) {
-			console.error('Failed to enable push notifications:', error);
+			console.error("Failed to enable push notifications:", error);
 			return false;
 		}
 	}
 
-	async scheduleDailyNotification(hats: Hat[], time: string = '07:00'): Promise<void> {
+	async scheduleDailyNotification(
+		hats: Hat[],
+		time: string = "07:00",
+	): Promise<void> {
 		if (!this.isSupported() || !this.subscription) {
-			console.warn('Push notifications not available');
+			console.warn("Push notifications not available");
 			return;
 		}
 
 		// Store the schedule in localStorage for the service worker to access
 		const schedule: NotificationSchedule = {
 			enabled: true,
-			time
+			time,
 		};
 
-		localStorage.setItem('notification-schedule', JSON.stringify(schedule));
-		localStorage.setItem('hat-collection', JSON.stringify(hats));
+		localStorage.setItem("notification-schedule", JSON.stringify(schedule));
+		localStorage.setItem("hat-collection", JSON.stringify(hats));
 
 		// Set up daily scheduling using setTimeout
 		// Note: In a production app, you'd want to use a more robust scheduling system
@@ -99,12 +105,12 @@ export class PWAService {
 	}
 
 	private scheduleNextNotification(hats: Hat[], time: string): void {
-		const [hours, minutes] = time.split(':').map(Number);
+		const [hours, minutes] = time.split(":").map(Number);
 		const now = new Date();
 		const scheduledTime = new Date();
-		
+
 		scheduledTime.setHours(hours, minutes, 0, 0);
-		
+
 		// If the time has already passed today, schedule for tomorrow
 		if (scheduledTime <= now) {
 			scheduledTime.setDate(scheduledTime.getDate() + 1);
@@ -118,7 +124,9 @@ export class PWAService {
 			this.scheduleNextNotification(hats, time);
 		}, timeUntilNotification);
 
-		console.log(`Next hat notification scheduled for ${scheduledTime.toLocaleString()}`);
+		console.log(
+			`Next hat notification scheduled for ${scheduledTime.toLocaleString()}`,
+		);
 	}
 
 	async sendDailyHatNotification(hats: Hat[]): Promise<void> {
@@ -130,14 +138,14 @@ export class PWAService {
 		const randomHat = hats[Math.floor(Math.random() * hats.length)];
 
 		const notificationData = {
-			title: 'Time to pick today\'s hat! 🧢',
+			title: "Time to pick today's hat! 🧢",
 			body: `How about wearing your ${randomHat.name}?`,
-			icon: '/icon-192.png',
+			icon: "/icon-192.png",
 			image: randomHat.imageUrl || null,
 			data: {
 				hatId: randomHat.id,
-				timestamp: Date.now()
-			}
+				timestamp: Date.now(),
+			},
 		};
 
 		// Send notification via service worker
@@ -145,16 +153,16 @@ export class PWAService {
 			const notificationOptions: any = {
 				body: notificationData.body,
 				icon: notificationData.icon,
-				badge: '/icon-192.png',
+				badge: "/icon-192.png",
 				data: notificationData.data,
 				actions: [
 					{
-						action: 'open',
-						title: 'Pick Hat'
-					}
+						action: "open",
+						title: "Pick Hat",
+					},
 				],
 				requireInteraction: true,
-				tag: 'daily-hat'
+				tag: "daily-hat",
 			};
 
 			// Add image if available and supported
@@ -162,17 +170,20 @@ export class PWAService {
 				notificationOptions.image = notificationData.image;
 			}
 
-			this.registration.showNotification(notificationData.title, notificationOptions);
+			this.registration.showNotification(
+				notificationData.title,
+				notificationOptions,
+			);
 		}
 	}
 
 	async disableNotifications(): Promise<void> {
 		const schedule: NotificationSchedule = {
 			enabled: false,
-			time: '07:00'
+			time: "07:00",
 		};
-		
-		localStorage.setItem('notification-schedule', JSON.stringify(schedule));
+
+		localStorage.setItem("notification-schedule", JSON.stringify(schedule));
 
 		if (this.subscription) {
 			await this.subscription.unsubscribe();
@@ -180,36 +191,36 @@ export class PWAService {
 		}
 	}
 
-	getNotificationStatus(): { 
-		supported: boolean; 
-		permission: NotificationPermission; 
+	getNotificationStatus(): {
+		supported: boolean;
+		permission: NotificationPermission;
 		enabled: boolean;
 		time: string;
 	} {
 		const schedule = this.getStoredSchedule();
-		
+
 		return {
 			supported: this.isSupported(),
 			permission: Notification.permission,
-			enabled: schedule.enabled && Notification.permission === 'granted',
-			time: schedule.time
+			enabled: schedule.enabled && Notification.permission === "granted",
+			time: schedule.time,
 		};
 	}
 
 	private getStoredSchedule(): NotificationSchedule {
 		try {
-			const stored = localStorage.getItem('notification-schedule');
-			return stored ? JSON.parse(stored) : { enabled: false, time: '07:00' };
+			const stored = localStorage.getItem("notification-schedule");
+			return stored ? JSON.parse(stored) : { enabled: false, time: "07:00" };
 		} catch {
-			return { enabled: false, time: '07:00' };
+			return { enabled: false, time: "07:00" };
 		}
 	}
 
 	private urlBase64ToUint8Array(base64String: string): Uint8Array {
-		const padding = '='.repeat((4 - base64String.length % 4) % 4);
+		const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
 		const base64 = (base64String + padding)
-			.replace(/-/g, '+')
-			.replace(/_/g, '/');
+			.replace(/-/g, "+")
+			.replace(/_/g, "/");
 
 		const rawData = window.atob(base64);
 		const outputArray = new Uint8Array(rawData.length);
