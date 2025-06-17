@@ -212,7 +212,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Caps</Text>
         
@@ -248,7 +248,7 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   content: {
+    flex: 1,
     padding: 16,
     maxWidth: 1200,
     alignSelf: 'center',
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   grid: {
+    flex: 1,
     flexDirection: 'row',
     gap: 24,
   },
@@ -282,12 +284,13 @@ const styles = StyleSheet.create({
   },
   selectorSectionMobile: {
     flex: 0,
+    flexShrink: 0,
   },
   inventorySection: {
     flex: 1,
   },
   inventorySectionMobile: {
-    flex: 0,
+    flex: 1,
   },
   sectionHeader: {
     flexDirection: 'row',
