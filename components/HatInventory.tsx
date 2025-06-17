@@ -79,13 +79,22 @@ export default function HatInventory({ hats, onDelete }: HatInventoryProps) {
       keyExtractor={(item) => item.id}
       renderItem={renderHat}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.listContainer}
+      contentContainerStyle={hats.length > 0 ? styles.listContainer : styles.emptyListContainer}
+      style={styles.list}
     />
   );
 }
 
 const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+  },
   listContainer: {
+    paddingTop: 16,
+  },
+  emptyListContainer: {
+    flex: 1,
+    justifyContent: 'center',
     paddingTop: 16,
   },
   hatCard: {
