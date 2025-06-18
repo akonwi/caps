@@ -10,6 +10,46 @@ export default function AddHat() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const pickImage = async () => {
+    // Check camera permissions first
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!cameraPermission.granted && !mediaLibraryPermission.granted) {
+      Alert.alert('Permission needed', 'Please grant camera and photo library permissions to add images.');
+      return;
+    }
+
+    Alert.alert(
+      'Select Image',
+      'Choose how you want to add a photo',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        ...(cameraPermission.granted ? [{
+          text: 'Take Photo',
+          onPress: () => launchCamera(),
+        }] : []),
+        ...(mediaLibraryPermission.granted ? [{
+          text: 'Choose from Library',
+          onPress: () => launchImageLibrary(),
+        }] : []),
+      ]
+    );
+  };
+
+  const launchCamera = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUrl(result.assets[0].uri);
+    }
+  };
+
+  const launchImageLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -59,7 +99,7 @@ export default function AddHat() {
           {imageUrl ? (
             <Image source={{ uri: imageUrl }} style={styles.previewImage} />
           ) : (
-            <Text style={styles.imagePickerText}>Tap to select image</Text>
+            <Text style={styles.imagePickerText}>Tap to take photo or choose image</Text>
           )}
         </TouchableOpacity>
 
