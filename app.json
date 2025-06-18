@@ -4,7 +4,7 @@
     "slug": "cap-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon-512.png",
     "scheme": "capapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -34,7 +34,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon-512.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -47,9 +47,7 @@
           "cameraPermission": "This app needs access to camera to let you take photos of your hats."
         }
       ],
-      [
-        "expo-document-picker"
-      ]
+      ["expo-document-picker"]
     ],
     "experiments": {
       "typedRoutes": true
