@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "cap-app",
-    "slug": "cap-app",
+    "name": "all-caps",
+    "slug": "all-caps",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-512.png",
-    "scheme": "capapp",
+    "scheme": "allcaps",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.cap-app",
+      "bundleIdentifier": "com.letsngoh.caps",
       "deploymentTarget": "13.4",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app needs access to photo library to let you add photos of your hats.",
@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": []
     },
     "web": {
       "bundler": "metro",
@@ -51,6 +52,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "65105a3e-5b1d-4ba9-b82c-bb8e48cf1e79"
+      }
+    },
+    "owner": "akonwi"
   }
 }
