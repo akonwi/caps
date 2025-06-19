@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-foreground.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -49,9 +49,7 @@
           "cameraPermission": "This app needs access to camera to let you take photos of your hats."
         }
       ],
-      [
-        "expo-document-picker"
-      ]
+      ["expo-document-picker"]
     ],
     "experiments": {
       "typedRoutes": true
