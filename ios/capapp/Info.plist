@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>capapp</string>
-          <string>com.anonymous.cap-app</string>
+          <string>com.letsngoh.all-caps</string>
         </array>
       </dict>
     </array>
