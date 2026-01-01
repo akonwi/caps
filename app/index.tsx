@@ -65,9 +65,7 @@ export default function HomeScreen() {
 
   // Save state whenever hats or lastSelectedIds change
   useEffect(() => {
-    if (hats.length > 0 || lastSelectedIds.length > 0) {
-      saveState({ hats, lastSelectedIds }).catch(console.error);
-    }
+    saveState({ hats, lastSelectedIds }).catch(console.error);
   }, [hats, lastSelectedIds]);
 
   const loadInitialState = async () => {
