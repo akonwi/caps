@@ -52,7 +52,15 @@
           "cameraPermission": "This app needs access to camera to let you take photos of your hats."
         }
       ],
-      ["expo-document-picker"]
+      ["expo-document-picker"],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 35
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
