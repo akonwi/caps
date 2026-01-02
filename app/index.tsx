@@ -131,7 +131,7 @@ export default function HomeScreen() {
   const exportCollection = async () => {
     try {
       const exportData = JSON.stringify({ hats, lastSelectedIds }, null, 2);
-      const fileName = `caps-${new Date().toISOString().split("T")[0]}.json`;
+      const fileName = `all-caps.json`;
       const fileUri = FileSystem.documentDirectory + fileName;
 
       await FileSystem.writeAsStringAsync(fileUri, exportData);
