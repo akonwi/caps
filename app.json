@@ -2,7 +2,7 @@
   "expo": {
     "name": "All Caps",
     "slug": "all-caps",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-512.png",
     "scheme": "allcaps",
@@ -52,9 +52,7 @@
           "cameraPermission": "This app needs access to camera to let you take photos of your hats."
         }
       ],
-      [
-        "expo-document-picker"
-      ],
+      ["expo-document-picker"],
       [
         "expo-build-properties",
         {
