@@ -7,8 +7,10 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
+import * as SQLite from "expo-sqlite";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { initializeDatabase } from "@/utils/db";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -22,14 +24,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="add-hat" options={{ title: "Add Hat" }} />
-        <Stack.Screen name="edit-hat" options={{ title: "Edit Hat" }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <SQLite.SQLiteProvider databaseName="caps.db" onInit={initializeDatabase}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="add-hat" options={{ title: "Add Hat" }} />
+          <Stack.Screen name="edit-hat" options={{ title: "Edit Hat" }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </SQLite.SQLiteProvider>
   );
 }

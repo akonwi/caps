@@ -16,23 +16,30 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import HatSelector from "@/components/HatSelector";
 import HatInventory from "@/components/HatInventory";
-import { saveState, loadState } from "@/utils/storage";
+import { useData } from "@/hooks/useData";
 import { eventEmitter, HatEvents } from "@/utils/events";
 import type { Hat, HatAddedEvent, HatUpdatedEvent } from "@/types";
 
 export default function HomeScreen() {
-  const [hats, setHats] = useState<Hat[]>([]);
-  const [selectedHat, setSelectedHat] = useState<Hat | null>(null);
-  const [lastSelectedIds, setLastSelectedIds] = useState<string[]>([]);
+  const {
+    hats,
+    selectedHat,
+    lastSelectedIds,
+    isLoading,
+    add,
+    bulkAdd,
+    delete: deleteHat,
+    update,
+    setSelectedHat,
+    updateLastSelectedIds,
+    clearAll,
+  } = useData();
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get("window").width,
   );
 
-  // Load state on mount
+  // Listen for orientation changes
   useEffect(() => {
-    loadInitialState();
-
-    // Listen for orientation changes
     const subscription = Dimensions.addEventListener("change", ({ window }) => {
       setScreenWidth(window.width);
     });
@@ -43,15 +50,11 @@ export default function HomeScreen() {
   // Listen for hat events
   useEffect(() => {
     const handleHatAdded = ({ hat }: HatAddedEvent) => {
-      setHats((prev) => [...prev, hat]);
+      add(hat).catch(console.error);
     };
 
     const handleHatUpdated = ({ hat }: HatUpdatedEvent) => {
-      setHats((prev) => prev.map((h) => (h.id === hat.id ? hat : h)));
-      // Update selected hat if it was the one being edited
-      if (selectedHat?.id === hat.id) {
-        setSelectedHat(hat);
-      }
+      update(hat).catch(console.error);
     };
 
     eventEmitter.on(HatEvents.HAT_ADDED, handleHatAdded);
@@ -61,34 +64,9 @@ export default function HomeScreen() {
       eventEmitter.removeListener(HatEvents.HAT_ADDED, handleHatAdded);
       eventEmitter.removeListener(HatEvents.HAT_UPDATED, handleHatUpdated);
     };
-  }, [selectedHat]);
+  }, [add, update]);
 
-  // Save state whenever hats or lastSelectedIds change
-  useEffect(() => {
-    saveState({ hats, lastSelectedIds }).catch(console.error);
-  }, [hats, lastSelectedIds]);
-
-  const loadInitialState = async () => {
-    try {
-      const state = await loadState();
-      if (state) {
-        setHats(state.hats || []);
-        setLastSelectedIds(state.lastSelectedIds || []);
-
-        // Set the most recently selected hat
-        if (state.lastSelectedIds?.length > 0) {
-          const mostRecentId =
-            state.lastSelectedIds[state.lastSelectedIds.length - 1];
-          const mostRecentHat = state.hats.find((h) => h.id === mostRecentId);
-          setSelectedHat(mostRecentHat || null);
-        }
-      }
-    } catch (error) {
-      console.error("Error loading initial state:", error);
-    }
-  };
-
-  const selectRandomHat = () => {
+  const selectRandomHat = async () => {
     if (hats.length === 0) {
       setSelectedHat(null);
       return;
@@ -108,7 +86,7 @@ export default function HomeScreen() {
       // If all hats were recently selected, use all hats
       const randomIndex = Math.floor(Math.random() * hats.length);
       setSelectedHat(hats[randomIndex]);
-      setLastSelectedIds([hats[randomIndex].id]);
+      await updateLastSelectedIds([hats[randomIndex].id]);
       return;
     }
 
@@ -123,19 +101,7 @@ export default function HomeScreen() {
       newLastSelectedIds.shift();
     }
     newLastSelectedIds.push(newSelectedHat.id);
-    setLastSelectedIds(newLastSelectedIds);
-  };
-
-  const deleteHat = (id: string) => {
-    setHats((prev) => prev.filter((hat) => hat.id !== id));
-
-    // Clear selected hat if it was deleted
-    if (selectedHat?.id === id) {
-      setSelectedHat(null);
-    }
-
-    // Remove from lastSelectedIds
-    setLastSelectedIds((prev) => prev.filter((hatId) => hatId !== id));
+    await updateLastSelectedIds(newLastSelectedIds);
   };
 
   const showDataMenu = () => {
@@ -202,8 +168,14 @@ export default function HomeScreen() {
           return;
         }
 
-        setHats(importedData.hats);
-        setLastSelectedIds(importedData.lastSelectedIds || []);
+        // Clear existing collection
+        await clearAll();
+
+        // Bulk add all imported hats
+        await bulkAdd(importedData.hats);
+
+        // Update lastSelectedIds
+        await updateLastSelectedIds(importedData.lastSelectedIds || []);
 
         // Update selected hat if possible
         if (importedData.lastSelectedIds?.length > 0) {
@@ -224,6 +196,16 @@ export default function HomeScreen() {
       Alert.alert("Error", "Failed to import collection");
     }
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <Text style={{ textAlign: "center", marginTop: 40 }}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
