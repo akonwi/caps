@@ -16,3 +16,8 @@ export interface HatAddedEvent {
 export interface HatUpdatedEvent {
   hat: Hat;
 }
+
+export interface DailySelectionState {
+  date: string;
+  hatId: string;
+}

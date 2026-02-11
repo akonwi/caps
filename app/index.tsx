@@ -31,6 +31,8 @@ export default function HomeScreen() {
     delete: deleteHat,
     update,
     setSelectedHat,
+    selectTodayHat,
+    ensureTodaySelection,
     updateLastSelectedIds,
     clearAll,
   } = useData();
@@ -66,43 +68,27 @@ export default function HomeScreen() {
     };
   }, [add, update]);
 
-  const selectRandomHat = async () => {
-    if (hats.length === 0) {
-      setSelectedHat(null);
-      return;
+  const handlePickHat = async () => {
+    try {
+      await selectTodayHat();
+    } catch (error) {
+      console.error("Error picking hat:", error);
     }
-
-    if (hats.length === 1) {
-      setSelectedHat(hats[0]);
-      return;
-    }
-
-    // Filter out recently selected hats
-    const availableHats = hats.filter(
-      (hat) => !lastSelectedIds.includes(hat.id),
-    );
-
-    if (availableHats.length === 0) {
-      // If all hats were recently selected, use all hats
-      const randomIndex = Math.floor(Math.random() * hats.length);
-      setSelectedHat(hats[randomIndex]);
-      await updateLastSelectedIds([hats[randomIndex].id]);
-      return;
-    }
-
-    // Select random hat from available ones
-    const randomIndex = Math.floor(Math.random() * availableHats.length);
-    const newSelectedHat = availableHats[randomIndex];
-    setSelectedHat(newSelectedHat);
-
-    // Update last selected IDs (keep max 7)
-    const newLastSelectedIds = [...lastSelectedIds];
-    if (newLastSelectedIds.length >= 7) {
-      newLastSelectedIds.shift();
-    }
-    newLastSelectedIds.push(newSelectedHat.id);
-    await updateLastSelectedIds(newLastSelectedIds);
   };
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const ensureSelection = async () => {
+      try {
+        await ensureTodaySelection();
+      } catch (error) {
+        console.error("Error ensuring daily selection:", error);
+      }
+    };
+
+    ensureSelection();
+  }, [isLoading, ensureTodaySelection]);
 
   const showDataMenu = () => {
     if (Platform.OS === "ios") {
@@ -219,7 +205,7 @@ export default function HomeScreen() {
           >
             <HatSelector
               selectedHat={selectedHat}
-              onSelect={selectRandomHat}
+              onSelect={handlePickHat}
               hatsCount={hats.length}
             />
           </View>
