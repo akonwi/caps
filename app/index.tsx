@@ -18,6 +18,7 @@ import HatSelector from "@/components/HatSelector";
 import HatInventory from "@/components/HatInventory";
 import { useData } from "@/hooks/useData";
 import { eventEmitter, HatEvents } from "@/utils/events";
+import { scheduleNextMorningHatNotification } from "@/utils/notifications";
 import type { Hat, HatAddedEvent, HatUpdatedEvent } from "@/types";
 
 export default function HomeScreen() {
@@ -70,7 +71,10 @@ export default function HomeScreen() {
 
   const handlePickHat = async () => {
     try {
-      await selectTodayHat();
+      const hat = await selectTodayHat();
+      if (hat) {
+        await scheduleNextMorningHatNotification(hat.name, hat.imageUrl);
+      }
     } catch (error) {
       console.error("Error picking hat:", error);
     }
@@ -81,7 +85,10 @@ export default function HomeScreen() {
 
     const ensureSelection = async () => {
       try {
-        await ensureTodaySelection();
+        const hat = await ensureTodaySelection();
+        if (hat) {
+          await scheduleNextMorningHatNotification(hat.name, hat.imageUrl);
+        }
       } catch (error) {
         console.error("Error ensuring daily selection:", error);
       }
