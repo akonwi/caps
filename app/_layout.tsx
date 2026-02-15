@@ -8,31 +8,18 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import * as SQLite from "expo-sqlite";
-import { useEffect } from "react";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { initializeDatabase } from "@/utils/db";
-import { registerDailyHatTask } from "@/utils/backgroundTasks";
-import { requestNotificationPermissions } from "@/utils/notifications";
+import { bootstrapBackgroundServices } from "@/utils/backgroundBootstrap";
+
+void bootstrapBackgroundServices();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-
-  useEffect(() => {
-    const setupBackgroundTasks = async () => {
-      try {
-        await requestNotificationPermissions();
-        await registerDailyHatTask();
-      } catch (error) {
-        console.error("Error setting up background tasks:", error);
-      }
-    };
-
-    setupBackgroundTasks();
-  }, []);
 
   if (!loaded) {
     // Async font loading only occurs in development.
